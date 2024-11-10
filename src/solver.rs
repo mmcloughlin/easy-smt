@@ -11,6 +11,15 @@ pub(crate) struct Solver {
     parser: Parser,
 }
 
+impl Drop for Solver {
+    fn drop(&mut self) {
+        self._handle
+            .wait()
+            .expect("failed to wait for solver process");
+        self._handle.kill().expect("failed to kill solver process");
+    }
+}
+
 impl Solver {
     pub fn new(
         program: ffi::OsString,
